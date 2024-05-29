@@ -1,5 +1,78 @@
 [
     {
+        "label": "Document",
+        "importPath": "mongoengine",
+        "description": "mongoengine",
+        "isExtraImport": true,
+        "detail": "mongoengine",
+        "documentation": {}
+    },
+    {
+        "label": "StringField",
+        "importPath": "mongoengine",
+        "description": "mongoengine",
+        "isExtraImport": true,
+        "detail": "mongoengine",
+        "documentation": {}
+    },
+    {
+        "label": "DateTimeField",
+        "importPath": "mongoengine",
+        "description": "mongoengine",
+        "isExtraImport": true,
+        "detail": "mongoengine",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "datetime",
+        "description": "datetime",
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timezone",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "Flask",
         "importPath": "flask",
         "description": "flask",
@@ -24,7 +97,7 @@
         "documentation": {}
     },
     {
-        "label": "make_response",
+        "label": "request",
         "importPath": "flask",
         "description": "flask",
         "isExtraImport": true,
@@ -48,12 +121,28 @@
         "documentation": {}
     },
     {
-        "label": "os",
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "os,",
         "kind": 6,
         "isExtraImport": true,
-        "importPath": "os",
-        "description": "os",
-        "detail": "os",
+        "importPath": "os.",
+        "description": "os.",
+        "detail": "os.",
+        "documentation": {}
+    },
+    {
+        "label": "json_util",
+        "importPath": "bson",
+        "description": "bson",
+        "isExtraImport": true,
+        "detail": "bson",
         "documentation": {}
     },
     {
@@ -63,6 +152,31 @@
         "importPath": "jwt",
         "description": "jwt",
         "detail": "jwt",
+        "documentation": {}
+    },
+    {
+        "label": "generate_password_hash",
+        "importPath": "werkzeug.security",
+        "description": "werkzeug.security",
+        "isExtraImport": true,
+        "detail": "werkzeug.security",
+        "documentation": {}
+    },
+    {
+        "label": "check_password_hash",
+        "importPath": "werkzeug.security",
+        "description": "werkzeug.security",
+        "isExtraImport": true,
+        "detail": "werkzeug.security",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
         "documentation": {}
     },
     {
@@ -91,20 +205,47 @@
         "documentation": {}
     },
     {
-        "label": "authenticate_token",
+        "label": "Schema",
+        "kind": 6,
+        "importPath": "backend.models",
+        "description": "backend.models",
+        "peekOfCode": "class Schema(Document):\n    fullName = StringField(required=True)\n    email = StringField(required=True)\n    password = StringField(required=True)\n    created_on = DateTimeField(default=datetime.datetime.now)\nUser = Schema",
+        "detail": "backend.models",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "kind": 5,
+        "importPath": "backend.models",
+        "description": "backend.models",
+        "peekOfCode": "User = Schema",
+        "detail": "backend.models",
+        "documentation": {}
+    },
+    {
+        "label": "hello",
         "kind": 2,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "def authenticate_token(f):    \n    def decorated_function(*args, **kwargs):\n        auth_header = request.headers.get('Authorization')\n        token = auth_header.split(\" \")[1] if auth_header else None\n        if not token:\n            return make_response('', 401)\n        try:\n            user = jwt.decode(token, ACCESS_TOKEN_SECRET, algorithms=[\"HS256\"])\n            request.user = user\n        except jwt.ExpiredSignatureError:",
+        "peekOfCode": "def hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:\n        data = request.get_json()\n        if not data:\n            return jsonify({'error': True, 'message': 'Invalid JSON format'}), 400\n        full_name = data.get('fullName')\n        email = data.get('email')",
         "detail": "backend.server",
         "documentation": {}
     },
     {
-        "label": "protected_route",
+        "label": "create_account",
         "kind": 2,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "def protected_route():\n    response = jsonify({'message': 'This is a protected route.', 'user': request.user})\n    response.headers.add('Access-Control-Allow-Origin', '*')  # Set CORS headers\n    return response\nmongo_uri = os.getenv(\"MONGO_URI\")\nclient = MongoClient(mongo_uri)\ndb = client.get_database('Fast-Note-Database') \nif __name__ == \"__main__\":  # Corrected the __name__ check\n    app.run(debug=True, port=8000)",
+        "peekOfCode": "def create_account():\n    try:\n        data = request.get_json()\n        if not data:\n            return jsonify({'error': True, 'message': 'Invalid JSON format'}), 400\n        full_name = data.get('fullName')\n        email = data.get('email')\n        password = data.get('password')\n        if not full_name:\n            return jsonify({'error': True, 'message': 'Full Name is required'}), 400",
+        "detail": "backend.server",
+        "documentation": {}
+    },
+    {
+        "label": "login",
+        "kind": 2,
+        "importPath": "backend.server",
+        "description": "backend.server",
+        "peekOfCode": "def login():\n    try:\n        data = request.get_json()\n        if not data:\n            return jsonify({'error': True, 'message': 'Invalid JSON format'}), 400\n        email = data.get('email')\n        password = data.get('password')\n        if not email:\n            return jsonify({'error': True, 'message': 'Email is required'}), 400\n        if not password:",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -113,25 +254,16 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "app = Flask(__name__)\nCORS(app)\nACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET', 'your_secret_key')\ndef authenticate_token(f):    \n    def decorated_function(*args, **kwargs):\n        auth_header = request.headers.get('Authorization')\n        token = auth_header.split(\" \")[1] if auth_header else None\n        if not token:\n            return make_response('', 401)\n        try:",
+        "peekOfCode": "app = Flask(__name__)\nCORS(app)\nMONGO_URI = os.getenv(\"MONGO_URI\")\nclient = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\n# Secret key for JWT\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():",
         "detail": "backend.server",
         "documentation": {}
     },
     {
-        "label": "ACCESS_TOKEN_SECRET",
+        "label": "MONGO_URI",
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET', 'your_secret_key')\ndef authenticate_token(f):    \n    def decorated_function(*args, **kwargs):\n        auth_header = request.headers.get('Authorization')\n        token = auth_header.split(\" \")[1] if auth_header else None\n        if not token:\n            return make_response('', 401)\n        try:\n            user = jwt.decode(token, ACCESS_TOKEN_SECRET, algorithms=[\"HS256\"])\n            request.user = user",
-        "detail": "backend.server",
-        "documentation": {}
-    },
-    {
-        "label": "mongo_uri",
-        "kind": 5,
-        "importPath": "backend.server",
-        "description": "backend.server",
-        "peekOfCode": "mongo_uri = os.getenv(\"MONGO_URI\")\nclient = MongoClient(mongo_uri)\ndb = client.get_database('Fast-Note-Database') \nif __name__ == \"__main__\":  # Corrected the __name__ check\n    app.run(debug=True, port=8000)",
+        "peekOfCode": "MONGO_URI = os.getenv(\"MONGO_URI\")\nclient = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\n# Secret key for JWT\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -140,7 +272,7 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "client = MongoClient(mongo_uri)\ndb = client.get_database('Fast-Note-Database') \nif __name__ == \"__main__\":  # Corrected the __name__ check\n    app.run(debug=True, port=8000)",
+        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\n# Secret key for JWT\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -149,8 +281,35 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "db = client.get_database('Fast-Note-Database') \nif __name__ == \"__main__\":  # Corrected the __name__ check\n    app.run(debug=True, port=8000)",
+        "peekOfCode": "db = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\n# Secret key for JWT\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:",
         "detail": "backend.server",
+        "documentation": {}
+    },
+    {
+        "label": "users",
+        "kind": 5,
+        "importPath": "backend.server",
+        "description": "backend.server",
+        "peekOfCode": "users = db['users']\n# Secret key for JWT\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:\n        data = request.get_json()",
+        "detail": "backend.server",
+        "documentation": {}
+    },
+    {
+        "label": "app.config['SECRET_KEY']",
+        "kind": 5,
+        "importPath": "backend.server",
+        "description": "backend.server",
+        "peekOfCode": "app.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:\n        data = request.get_json()\n        if not data:\n            return jsonify({'error': True, 'message': 'Invalid JSON format'}), 400",
+        "detail": "backend.server",
+        "documentation": {}
+    },
+    {
+        "label": "authenticate_token",
+        "kind": 2,
+        "importPath": "backend.utilities",
+        "description": "backend.utilities",
+        "peekOfCode": "def authenticate_token(req):\n    auth_header = req.headers.get(\"Authorization\")\n    if not auth_header:\n        return None\n    token = auth_header.split(\" \")[1]\n    if not token:\n        return None\n    try:\n        decoded_token = jwt.decode(token, os.getenv(\"ACCESS_TOKEN_SECRET\"))\n        return decoded_token",
+        "detail": "backend.utilities",
         "documentation": {}
     },
     {

@@ -1,43 +1,122 @@
-from flask import Flask, jsonify, request, make_response
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from pymongo import MongoClient
-import os
+from dotenv import load_dotenv
+from datetime import datetime, timedelta, timezone
+import os, json
+from bson import json_util
 import jwt
+from datetime import datetime, timedelta
+from werkzeug.security import generate_password_hash, check_password_hash
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET', 'your_secret_key')
+MONGO_URI = os.getenv("MONGO_URI")
+client = MongoClient(MONGO_URI)
+db = client.get_database("Fast-Note-Database")
+users = db['users']
 
-def authenticate_token(f):    
-    def decorated_function(*args, **kwargs):
-        auth_header = request.headers.get('Authorization')
-        token = auth_header.split(" ")[1] if auth_header else None
-        
-        if not token:
-            return make_response('', 401)
+# Secret key for JWT
+app.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')
 
-        try:
-            user = jwt.decode(token, ACCESS_TOKEN_SECRET, algorithms=["HS256"])
-            request.user = user
-        except jwt.ExpiredSignatureError:
-            return make_response('', 401)
-        except jwt.InvalidTokenError:
-            return make_response('', 401)
 
-        return f(*args, **kwargs)
-    return decorated_function
 
-@app.route('/protected', methods=['GET'])
-@authenticate_token
-def protected_route():
-    response = jsonify({'message': 'This is a protected route.', 'user': request.user})
-    response.headers.add('Access-Control-Allow-Origin', '*')  # Set CORS headers
-    return response
+@app.route("/")
+def hello():
+    return jsonify({"data": "hello"})
 
-mongo_uri = os.getenv("MONGO_URI")
-client = MongoClient(mongo_uri)
-db = client.get_database('Fast-Note-Database') 
+@app.route('/create-account', methods=['POST'])
+def create_account():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': True, 'message': 'Invalid JSON format'}), 400
 
-if __name__ == "__main__":  # Corrected the __name__ check
+        full_name = data.get('fullName')
+        email = data.get('email')
+        password = data.get('password')
+
+        if not full_name:
+            return jsonify({'error': True, 'message': 'Full Name is required'}), 400
+        if not email:
+            return jsonify({'error': True, 'message': 'Email is required'}), 400
+        if not password:
+            return jsonify({'error': True, 'message': 'Password is required'}), 400
+
+        is_user = users.find_one({'email': email})
+        if is_user:
+            return jsonify({'error': True, 'message': 'User already exists'}), 400
+
+        hashed_password = generate_password_hash(password)
+        new_user = {
+            'fullName': full_name,
+            'email': email,
+            'password': hashed_password,
+            'created_on': datetime.now(timezone.utc)  # Use timezone-aware datetime
+        }
+        result = users.insert_one(new_user)
+        new_user['_id'] = str(result.inserted_id)
+
+        access_token = jwt.encode({
+            'user': {
+                'fullName': full_name,
+                'email': email
+            },
+            'exp': datetime.utcnow().replace(tzinfo=timezone.utc) + timedelta(minutes=30)  # Ensure timezone-aware
+        }, app.config['SECRET_KEY'], algorithm='HS256')
+
+        return jsonify({
+            'error': False,
+            'user': new_user,
+            'accessToken': access_token,
+            'message': 'Registration Successful'
+        }), 201
+
+    except Exception as e:
+        return jsonify({'error': True, 'message': str(e)}), 500
+
+@app.route('/login', methods=['POST'])
+def login():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': True, 'message': 'Invalid JSON format'}), 400
+
+        email = data.get('email')
+        password = data.get('password')
+
+        if not email:
+            return jsonify({'error': True, 'message': 'Email is required'}), 400
+        if not password:
+            return jsonify({'error': True, 'message': 'Password is required'}), 400
+
+        user = users.find_one({'email': email})
+        if not user:
+            return jsonify({'error': True, 'message': 'User not found'}), 404
+
+        if check_password_hash(user['password'], password):
+            access_token = jwt.encode({
+                'user': {
+                    'fullName': user['fullName'],
+                    'email': email
+                },
+                'exp': datetime.utcnow().replace(tzinfo=timezone.utc) + timedelta(minutes=30)
+            }, app.config['SECRET_KEY'], algorithm='HS256')
+
+            return jsonify({
+                'error': False,
+                'message': 'Login Successful',
+                'email': email,
+                'accessToken': access_token
+            }), 200
+        else:
+            return jsonify({'error': True, 'message': 'Invalid credentials'}), 401
+
+    except Exception as e:
+        return jsonify({'error': True, 'message': str(e)}), 500
+
+if __name__ == "__main__": 
     app.run(debug=True, port=8000)
