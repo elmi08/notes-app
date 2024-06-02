@@ -24,6 +24,22 @@
         "documentation": {}
     },
     {
+        "label": "BooleanField",
+        "importPath": "mongoengine",
+        "description": "mongoengine",
+        "isExtraImport": true,
+        "detail": "mongoengine",
+        "documentation": {}
+    },
+    {
+        "label": "ListField",
+        "importPath": "mongoengine",
+        "description": "mongoengine",
+        "isExtraImport": true,
+        "detail": "mongoengine",
+        "documentation": {}
+    },
+    {
         "label": "datetime",
         "kind": 6,
         "isExtraImport": true,
@@ -129,16 +145,7 @@
         "documentation": {}
     },
     {
-        "label": "os,",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "os.",
-        "description": "os.",
-        "detail": "os.",
-        "documentation": {}
-    },
-    {
-        "label": "json_util",
+        "label": "ObjectId",
         "importPath": "bson",
         "description": "bson",
         "isExtraImport": true,
@@ -146,12 +153,27 @@
         "documentation": {}
     },
     {
-        "label": "jwt",
-        "kind": 6,
+        "label": "dumps",
+        "importPath": "bson.json_util",
+        "description": "bson.json_util",
         "isExtraImport": true,
-        "importPath": "jwt",
-        "description": "jwt",
-        "detail": "jwt",
+        "detail": "bson.json_util",
+        "documentation": {}
+    },
+    {
+        "label": "Note",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
         "documentation": {}
     },
     {
@@ -168,6 +190,24 @@
         "description": "werkzeug.security",
         "isExtraImport": true,
         "detail": "werkzeug.security",
+        "documentation": {}
+    },
+    {
+        "label": "os,",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os.",
+        "description": "os.",
+        "detail": "os.",
+        "documentation": {}
+    },
+    {
+        "label": "jwt",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "jwt",
+        "description": "jwt",
+        "detail": "jwt",
         "documentation": {}
     },
     {
@@ -205,20 +245,20 @@
         "documentation": {}
     },
     {
-        "label": "Schema",
+        "label": "User",
         "kind": 6,
         "importPath": "backend.models",
         "description": "backend.models",
-        "peekOfCode": "class Schema(Document):\n    fullName = StringField(required=True)\n    email = StringField(required=True)\n    password = StringField(required=True)\n    created_on = DateTimeField(default=datetime.datetime.now)\nUser = Schema",
+        "peekOfCode": "class User(Document):\n    fullName = StringField(required=True)\n    email = StringField(required=True)\n    password = StringField(required=True)\n    created_on = DateTimeField(default=datetime.datetime.now)\nclass Note(Document):\n    title = StringField(required=True)\n    content = StringField(required=True)\n    tags = ListField(StringField(), default=[])\n    isPinned = BooleanField(default=False)",
         "detail": "backend.models",
         "documentation": {}
     },
     {
-        "label": "User",
-        "kind": 5,
+        "label": "Note",
+        "kind": 6,
         "importPath": "backend.models",
         "description": "backend.models",
-        "peekOfCode": "User = Schema",
+        "peekOfCode": "class Note(Document):\n    title = StringField(required=True)\n    content = StringField(required=True)\n    tags = ListField(StringField(), default=[])\n    isPinned = BooleanField(default=False)\n    userId = StringField(required=True)\n    created_on = DateTimeField(default=datetime.datetime.now)",
         "detail": "backend.models",
         "documentation": {}
     },
@@ -250,11 +290,65 @@
         "documentation": {}
     },
     {
+        "label": "get_users",
+        "kind": 2,
+        "importPath": "backend.server",
+        "description": "backend.server",
+        "peekOfCode": "def get_users():\n    try:\n        all_users = list(users.find({}))\n        # Convert ObjectId to string for JSON serialization\n        for user in all_users:\n            user['_id'] = str(user['_id'])\n        return jsonify({'error': False, 'users': all_users}), 200\n    except Exception as e:\n        return jsonify({'error': True, 'message': str(e)}), 500\n@app.route('/add-note', methods=['POST'])",
+        "detail": "backend.server",
+        "documentation": {}
+    },
+    {
+        "label": "add_note",
+        "kind": 2,
+        "importPath": "backend.server",
+        "description": "backend.server",
+        "peekOfCode": "def add_note():\n    try:\n        data = request.json\n        title = data.get('title')\n        content = data.get('content')\n        tags = data.get('tags', [])\n        user_id = data.get('user_id')\n        isPinned = data.get('ispinned', False)\n        if not title:\n            return jsonify({'error': True, 'message': 'Title is required'}), 400",
+        "detail": "backend.server",
+        "documentation": {}
+    },
+    {
+        "label": "edit_note",
+        "kind": 2,
+        "importPath": "backend.server",
+        "description": "backend.server",
+        "peekOfCode": "def edit_note(note_id):\n    try:\n        data = request.json\n        title = data.get('title')\n        content = data.get('content')\n        tags = data.get('tags', [])\n        user_id = data.get('user_id')\n        isPinned = data.get('ispinned', False)\n        if not title and not content and not tags and not user_id and not isPinned:\n            return jsonify({'error': True, 'message': 'No data provided for update'}), 400",
+        "detail": "backend.server",
+        "documentation": {}
+    },
+    {
+        "label": "get_notes",
+        "kind": 2,
+        "importPath": "backend.server",
+        "description": "backend.server",
+        "peekOfCode": "def get_notes():\n    try:\n        all_notes = list(notes_collection.find({}))\n        # Convert ObjectId to string for JSON serialization\n        serialized_notes = dumps(all_notes)\n        # Convert JSON string to Python dictionary\n        notes_dict = json.loads(serialized_notes)\n        return jsonify({'error': False, 'notes': notes_dict}), 200\n    except Exception as e:\n        return jsonify({'error': True, 'message': str(e)}), 500",
+        "detail": "backend.server",
+        "documentation": {}
+    },
+    {
+        "label": "delete_note",
+        "kind": 2,
+        "importPath": "backend.server",
+        "description": "backend.server",
+        "peekOfCode": "def delete_note(note_id):\n    try:\n        note = notes_collection.find_one({'_id': ObjectId(note_id)})\n        if not note:\n            return jsonify({'error': True, 'message': 'Note not found'}), 404\n        result = notes_collection.delete_one({'_id': ObjectId(note_id)})\n        if result.deleted_count == 1:\n            return jsonify({'error': False, 'message': 'Note deleted successfully'}), 200\n        else:\n            return jsonify({'error': True, 'message': 'Failed to delete note'}), 500",
+        "detail": "backend.server",
+        "documentation": {}
+    },
+    {
+        "label": "update_pinned",
+        "kind": 2,
+        "importPath": "backend.server",
+        "description": "backend.server",
+        "peekOfCode": "def update_pinned(note_id):\n    try:\n        data = request.json\n        is_pinned = data.get('isPinned')\n        note = notes_collection.find_one({'_id': ObjectId(note_id)})\n        if not note:\n            return jsonify({'error': True, 'message': 'Note not found'}), 404\n        result = notes_collection.update_one(\n            {'_id': ObjectId(note_id)},\n            {'$set': {'isPinned': is_pinned}}",
+        "detail": "backend.server",
+        "documentation": {}
+    },
+    {
         "label": "app",
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "app = Flask(__name__)\nCORS(app)\nMONGO_URI = os.getenv(\"MONGO_URI\")\nclient = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\n# Secret key for JWT\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():",
+        "peekOfCode": "app = Flask(__name__)\nCORS(app)\nMONGO_URI = os.getenv(\"MONGO_URI\")\nclient = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -263,7 +357,7 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "MONGO_URI = os.getenv(\"MONGO_URI\")\nclient = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\n# Secret key for JWT\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])",
+        "peekOfCode": "MONGO_URI = os.getenv(\"MONGO_URI\")\nclient = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -272,7 +366,7 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\n# Secret key for JWT\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():",
+        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -281,7 +375,7 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "db = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\n# Secret key for JWT\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:",
+        "peekOfCode": "db = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -290,7 +384,16 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "users = db['users']\n# Secret key for JWT\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:\n        data = request.get_json()",
+        "peekOfCode": "users = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:\n        data = request.get_json()",
+        "detail": "backend.server",
+        "documentation": {}
+    },
+    {
+        "label": "notes_collection",
+        "kind": 5,
+        "importPath": "backend.server",
+        "description": "backend.server",
+        "peekOfCode": "notes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:\n        data = request.get_json()\n        if not data:",
         "detail": "backend.server",
         "documentation": {}
     },
