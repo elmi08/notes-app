@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import PasswordInput from '../../components/Input/PasswordInput'
 import { validateEmail } from '../../utils/helper'
+import axiosInstance from '../../utils/axiosinstance'
+
 
 const Login = () => {
 
@@ -10,20 +12,46 @@ const Login = () => {
     const [password, setPassword] = useState("")
     const [error, setError] = useState(null)
 
-    const handlelogin = async (e) => {
-        e.preventDefault()
+    const navigate = useNavigate()
 
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        // Clear previous errors
+        setError("");
+
+        // Validate email and password
         if (!validateEmail(email)) {
-            setError("Plese enter a valid email address")
+            setError("Please enter a valid email address");
+            return;
         }
+
         if (!password) {
-            setError("Please enter a password")
-            return
-
+            setError("Please enter a password");
+            return;
         }
 
-        setError("")
-    }
+        try {
+            const response = await axiosInstance.post("/login", {
+                email: email,
+                password: password
+            });
+
+            if (response.data && response.data.accessToken) {
+                localStorage.setItem("token", response.data.accessToken);
+                navigate("/dashboard");
+            } else {
+                setError('Login failed. Please try again.');
+            }
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.message) {
+                setError(error.response.data.message);
+            } else {
+                setError('An unexpected error occurred. Please try again later');
+            }
+        }
+    };
+
 
     return (
         <>
@@ -40,7 +68,7 @@ const Login = () => {
                             Sign in to your account
                         </h2>
                     </div>
-                    <form onSubmit={handlelogin} className='mb-4'>
+                    <form onSubmit={handleLogin} className='mb-4'>
                         <input
                             type='text'
                             placeholder='Email'

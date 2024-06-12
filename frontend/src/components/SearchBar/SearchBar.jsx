@@ -1,7 +1,6 @@
-import React from 'react'
-import { FaMagnifyingGlass } from 'react-icons/fa6'
-import { IoMdClose } from "react-icons/io"
-
+import React from 'react';
+import { FaMagnifyingGlass } from 'react-icons/fa6';
+import { IoMdClose } from "react-icons/io";
 
 const SearchBar = ({ value, onChange, handleSearch, onClearSearch }) => {
     return (
@@ -13,21 +12,19 @@ const SearchBar = ({ value, onChange, handleSearch, onClearSearch }) => {
                 value={value}
                 onChange={onChange}
             />
-
             {value && (
                 <IoMdClose
-                    className='text-slate-400 cursor-pointer hover:text-black ml-2' // Add margin to the left of the close icon
+                    className='text-slate-400 cursor-pointer hover:text-black ml-2'
                     onClick={onClearSearch}
                     size={22}
                 />
             )}
-
             <FaMagnifyingGlass
-                className='text-slate-400 cursor-pointer hover:text-black ml-2' // Add margin to the left of the magnifying glass icon
+                className='text-slate-400 cursor-pointer hover:text-black ml-2'
                 onClick={handleSearch}
             />
         </div>
-    )
-}
+    );
+};
 
-export default SearchBar
+export default SearchBar;

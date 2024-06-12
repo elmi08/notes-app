@@ -113,7 +113,7 @@
         "documentation": {}
     },
     {
-        "label": "request",
+        "label": "g",
         "importPath": "flask",
         "description": "flask",
         "isExtraImport": true,
@@ -161,19 +161,11 @@
         "documentation": {}
     },
     {
-        "label": "Note",
-        "importPath": "models",
-        "description": "models",
+        "label": "authenticate_token",
+        "importPath": "utilities",
+        "description": "utilities",
         "isExtraImport": true,
-        "detail": "models",
-        "documentation": {}
-    },
-    {
-        "label": "User",
-        "importPath": "models",
-        "description": "models",
-        "isExtraImport": true,
-        "detail": "models",
+        "detail": "utilities",
         "documentation": {}
     },
     {
@@ -202,12 +194,12 @@
         "documentation": {}
     },
     {
-        "label": "jwt",
+        "label": "jwt,",
         "kind": 6,
         "isExtraImport": true,
-        "importPath": "jwt",
-        "description": "jwt",
-        "detail": "jwt",
+        "importPath": "jwt.",
+        "description": "jwt.",
+        "detail": "jwt.",
         "documentation": {}
     },
     {
@@ -217,6 +209,15 @@
         "importPath": "os",
         "description": "os",
         "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "jwt",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "jwt",
+        "description": "jwt",
+        "detail": "jwt",
         "documentation": {}
     },
     {
@@ -263,6 +264,15 @@
         "documentation": {}
     },
     {
+        "label": "authenticate_request",
+        "kind": 2,
+        "importPath": "backend.server",
+        "description": "backend.server",
+        "peekOfCode": "def authenticate_request():\n    g.user = authenticate_token(request)\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:\n        data = request.get_json()\n        if not data:",
+        "detail": "backend.server",
+        "documentation": {}
+    },
+    {
         "label": "hello",
         "kind": 2,
         "importPath": "backend.server",
@@ -290,11 +300,11 @@
         "documentation": {}
     },
     {
-        "label": "get_users",
+        "label": "get_user",
         "kind": 2,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "def get_users():\n    try:\n        all_users = list(users.find({}))\n        # Convert ObjectId to string for JSON serialization\n        for user in all_users:\n            user['_id'] = str(user['_id'])\n        return jsonify({'error': False, 'users': all_users}), 200\n    except Exception as e:\n        return jsonify({'error': True, 'message': str(e)}), 500\n@app.route('/add-note', methods=['POST'])",
+        "peekOfCode": "def get_user():\n    try:\n        decoded_token, user_id = authenticate_token(request)\n        if not user_id:\n            return jsonify({'error': True, 'message': 'User ID not found in token'}), 401\n        user_id = decoded_token.get('user', {}).get('id')\n        if not user_id:\n            return jsonify({'error': True, 'message': 'User ID not found in token'}), 400\n        user = users.find_one({'_id': ObjectId(user_id)})\n        if not user:",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -303,7 +313,7 @@
         "kind": 2,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "def add_note():\n    try:\n        data = request.json\n        title = data.get('title')\n        content = data.get('content')\n        tags = data.get('tags', [])\n        user_id = data.get('user_id')\n        isPinned = data.get('ispinned', False)\n        if not title:\n            return jsonify({'error': True, 'message': 'Title is required'}), 400",
+        "peekOfCode": "def add_note():\n    try:\n        decoded_token, user_id = authenticate_token(request)\n        if not user_id:\n            return jsonify({'error': True, 'message': 'User ID not found in token'}), 401\n        # Get the note data from the request JSON\n        data = request.json\n        title = data.get('title')\n        content = data.get('content')\n        tags = data.get('tags', [])",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -317,20 +327,20 @@
         "documentation": {}
     },
     {
-        "label": "get_notes",
-        "kind": 2,
-        "importPath": "backend.server",
-        "description": "backend.server",
-        "peekOfCode": "def get_notes():\n    try:\n        all_notes = list(notes_collection.find({}))\n        # Convert ObjectId to string for JSON serialization\n        serialized_notes = dumps(all_notes)\n        # Convert JSON string to Python dictionary\n        notes_dict = json.loads(serialized_notes)\n        return jsonify({'error': False, 'notes': notes_dict}), 200\n    except Exception as e:\n        return jsonify({'error': True, 'message': str(e)}), 500",
-        "detail": "backend.server",
-        "documentation": {}
-    },
-    {
         "label": "delete_note",
         "kind": 2,
         "importPath": "backend.server",
         "description": "backend.server",
         "peekOfCode": "def delete_note(note_id):\n    try:\n        note = notes_collection.find_one({'_id': ObjectId(note_id)})\n        if not note:\n            return jsonify({'error': True, 'message': 'Note not found'}), 404\n        result = notes_collection.delete_one({'_id': ObjectId(note_id)})\n        if result.deleted_count == 1:\n            return jsonify({'error': False, 'message': 'Note deleted successfully'}), 200\n        else:\n            return jsonify({'error': True, 'message': 'Failed to delete note'}), 500",
+        "detail": "backend.server",
+        "documentation": {}
+    },
+    {
+        "label": "get_notes",
+        "kind": 2,
+        "importPath": "backend.server",
+        "description": "backend.server",
+        "peekOfCode": "def get_notes():\n    try:\n        decoded_token, user_id = authenticate_token(request)\n        if not user_id:\n            return jsonify({'error': True, 'message': 'User ID not found in token'}), 401\n        user_notes = list(notes_collection.find({'user_id': user_id}))\n        for note in user_notes:\n            note['_id'] = str(note['_id'])\n            note['user_id'] = str(note['user_id'])\n        return jsonify({'error': False, 'notes': user_notes}), 200",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -348,7 +358,7 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "app = Flask(__name__)\nCORS(app)\nMONGO_URI = os.getenv(\"MONGO_URI\")\nclient = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():",
+        "peekOfCode": "app = Flask(__name__)\nCORS(app)\nMONGO_URI = os.getenv(\"MONGO_URI\")\nclient = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\nlogging.basicConfig(level=logging.INFO)\n@app.before_request",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -357,7 +367,7 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "MONGO_URI = os.getenv(\"MONGO_URI\")\nclient = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])",
+        "peekOfCode": "MONGO_URI = os.getenv(\"MONGO_URI\")\nclient = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\nlogging.basicConfig(level=logging.INFO)\n@app.before_request\ndef authenticate_request():\n    g.user = authenticate_token(request)",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -366,7 +376,7 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():",
+        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\nlogging.basicConfig(level=logging.INFO)\n@app.before_request\ndef authenticate_request():\n    g.user = authenticate_token(request)\n@app.route(\"/\")",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -375,7 +385,7 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "db = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:",
+        "peekOfCode": "db = client.get_database(\"Fast-Note-Database\")\nusers = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\nlogging.basicConfig(level=logging.INFO)\n@app.before_request\ndef authenticate_request():\n    g.user = authenticate_token(request)\n@app.route(\"/\")\ndef hello():",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -384,7 +394,7 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "users = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:\n        data = request.get_json()",
+        "peekOfCode": "users = db['users']\nnotes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\nlogging.basicConfig(level=logging.INFO)\n@app.before_request\ndef authenticate_request():\n    g.user = authenticate_token(request)\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -393,7 +403,7 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "notes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:\n        data = request.get_json()\n        if not data:",
+        "peekOfCode": "notes_collection = db['notes']\napp.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\nlogging.basicConfig(level=logging.INFO)\n@app.before_request\ndef authenticate_request():\n    g.user = authenticate_token(request)\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -402,7 +412,7 @@
         "kind": 5,
         "importPath": "backend.server",
         "description": "backend.server",
-        "peekOfCode": "app.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():\n    try:\n        data = request.get_json()\n        if not data:\n            return jsonify({'error': True, 'message': 'Invalid JSON format'}), 400",
+        "peekOfCode": "app.config['SECRET_KEY'] = os.getenv('ACCESS_TOKEN_SECRET')\nlogging.basicConfig(level=logging.INFO)\n@app.before_request\ndef authenticate_request():\n    g.user = authenticate_token(request)\n@app.route(\"/\")\ndef hello():\n    return jsonify({\"data\": \"hello\"})\n@app.route('/create-account', methods=['POST'])\ndef create_account():",
         "detail": "backend.server",
         "documentation": {}
     },
@@ -411,7 +421,7 @@
         "kind": 2,
         "importPath": "backend.utilities",
         "description": "backend.utilities",
-        "peekOfCode": "def authenticate_token(req):\n    auth_header = req.headers.get(\"Authorization\")\n    if not auth_header:\n        return None\n    token = auth_header.split(\" \")[1]\n    if not token:\n        return None\n    try:\n        decoded_token = jwt.decode(token, os.getenv(\"ACCESS_TOKEN_SECRET\"))\n        return decoded_token",
+        "peekOfCode": "def authenticate_token(req):\n    if req is None:\n        return None\n    auth_header = req.headers.get(\"Authorization\")\n    if not auth_header:\n        return None\n    token = auth_header.split(\" \")[1]\n    if not token:\n        return None\n    try:",
         "detail": "backend.utilities",
         "documentation": {}
     },
