@@ -1,13 +1,20 @@
-FROM node:16-alpine
+# Use the official Node.js image
+FROM node:16
 
-WORKDIR /app/frontend
+# Set the working directory in the container
+WORKDIR /app
 
-COPY frontend/package*.json ./
+# Copy the package.json and package-lock.json files
+COPY package.json package-lock.json ./
 
+# Install dependencies
 RUN npm install
 
-COPY frontend .
+# Copy the rest of the application code
+COPY . .
 
+# Expose the port the app runs on
 EXPOSE 3000
 
+# Command to run the application
 CMD ["npm", "run", "dev"]
