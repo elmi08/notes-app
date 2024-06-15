@@ -27,7 +27,7 @@ jobs:
       - name: Build and push backend Docker image
         run: |
           docker build -t $DOCKERHUB_USERNAME/fast-note-backend:$GITHUB_SHA backend/
-          docker push $DOCKERHUB_USERNAME/notes-backend:$GITHUB_SHA
+          docker push $DOCKERHUB_USERNAME/fast-note-backend:$GITHUB_SHA
 
       # Build and push frontend Docker image
       - name: Build and push frontend Docker image
