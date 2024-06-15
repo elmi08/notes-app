@@ -38,6 +38,7 @@ jobs:
       # Configure kubectl with kubeconfig
       - name: Set up Kubeconfig
         run: |
+          mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" > $HOME/.kube/config
 
       # Deploy backend to MicroK8s
