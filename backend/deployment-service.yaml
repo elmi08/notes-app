@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: elmi08/fast-notes:latest
+          image: fast-notes-backend:latest
           ports:
             - containerPort: 8000
 ...
