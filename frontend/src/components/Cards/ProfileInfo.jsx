@@ -7,15 +7,15 @@ const ProfileInfo = ({ userInfo, onLogout }) => {
     }
 
     return (
-        <div className='flex items-center gap-3'>
-            <div className='w-12 h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-100'>
-                {getInitials(userInfo.fullName)}
-            </div>
-            <div>
-                <p className='text-sm font-medium'>{userInfo.fullName}</p>
-                <button className='text-sm text-slate-700 underline' onClick={onLogout}>Logout</button>
-            </div>
+        <div className='flex items-center gap-3 ml-4'>
+        <div className='w-12 h-12 flex items-center justify-center rounded-full bg-gray-200'>
+            <span className="text-black font-medium">{getInitials(userInfo.fullName)}</span>
         </div>
+        <div>
+            <p className='text-sm font-medium text-black'>{userInfo.fullName}</p>
+            <button className='text-sm text-black underline' onClick={onLogout}>Logout</button>
+        </div>
+    </div>
     );
 }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ProfileInfo from "../../components/Cards/ProfileInfo";
 import { useNavigate } from 'react-router-dom';
 import SearchBar from '../../components/SearchBar/SearchBar';
+import logoImage from '../../assets/images/logo.png'
 
 const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -26,17 +27,22 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
 
     return (
         <div className="bg-white flex items-center justify-between px-6 py-2 drop-shadow">
-            <h2 className="text-xl font-medium text-black py-2">Notes</h2>
-
+        <div className="flex items-center">
+            <img src={logoImage} alt="Logo" className="h-8 mr-2" />
+            <h2 className="text-xl font-bold text-black">Fast Notes</h2>
+        </div>
+        <div className="flex-grow ml-20 mr-16">
             <SearchBar
                 value={searchQuery}
                 onChange={({ target }) => setSearchQuery(target.value)}
                 handleSearch={handleSearch}
                 onClearSearch={onClearSearch}
             />
-
-            <ProfileInfo userInfo={userInfo} onLogout={onLogout} />
         </div>
+        <ProfileInfo userInfo={userInfo} onLogout={onLogout} />
+    </div>
+
+    
     );
 };
 

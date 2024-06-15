@@ -7,9 +7,9 @@ import Modal from "react-modal";
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosinstance';
 import Toast from '../../components/ToastMessage/Toast';
-import AddNotesImg from '../../assets/images/add-note.svg';
-import NoDataImg from '../../assets/images/no-such-notes.svg';
 import EmptyCard from '../../components/EmptyCard/EmptyCard';
+import NoDataImg from '../../assets/images/no-notes.jpg'
+import AddNotesImg from '../../assets/images/add-note.jpg'
 
 const Home = () => {
     const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -140,29 +140,33 @@ const Home = () => {
                 onSearchNote={onSearchNote}
                 handleClearSearch={handleClearSearch}
             />
-            <div className='container mx-auto relative min-h-screen'>
-                {allNotes.length > 0 ? (
-                    <div className='grid grid-cols-3 gap-4 mt-8'>
-                        {allNotes.map((item) => (
-                            <NoteCard
-                                key={item._id}
-                                title={item.title}
-                                date={item.createdOn}
-                                content={item.content}
-                                tags={item.tags}
-                                isPinned={item.isPinned}
-                                onEdit={() => handleEdit(item)}
-                                onDelete={() => deleteNote(item)}
-                                onPinNote={() => updateIsPinned(item)}
-                            />
-                        ))}
-                    </div>
-                ) : (
-                    <EmptyCard
-                        imgSrc={isSearch ? NoDataImg : AddNotesImg}
-                        message={isSearch ? 'Ooops! No Notes Found Matching Your Search' : 'Create Your First Note! Click the + Icon at the Bottom Right Corner'} />
-                )}
+            <div className='relative min-h-screen bg-blue-500'>
+                <div className='p-6'>
+                    {allNotes.length > 0 ? (
+                        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                            {allNotes.map((item) => (
+                                <NoteCard
+                                    key={item._id}
+                                    title={item.title}
+                                    date={item.createdOn}
+                                    content={item.content}
+                                    tags={item.tags}
+                                    isPinned={item.isPinned}
+                                    onEdit={() => handleEdit(item)}
+                                    onDelete={() => deleteNote(item)}
+                                    onPinNote={() => updateIsPinned(item)}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <EmptyCard
+                            imgSrc={isSearch ? NoDataImg : AddNotesImg}
+                            message={isSearch ? 'Ooops! No Notes Found Matching Your Search' : 'Create Your First Note! Click the + Icon at the Bottom Right Corner'}
+                        />
+                    )}
+                </div>
             </div>
+
             <button
                 className='w-16 h-16 flex items-center justify-center rounded-2xl bg-blue-500 hover:bg-blue-600 text-white hover:text-white fixed bottom-10 right-10 z-50'
                 onClick={() => {
@@ -199,10 +203,8 @@ const Home = () => {
                 <AddEditNotes
                     type={openAddEditModal.type}
                     noteData={openAddEditModal.data}
-                    onClose={async () => {
-                        setOpenAddEditModal({ isShown: false, type: "add", data: null });
-                        await getAllNotes();
-                    }}
+                    getAllNotes={getAllNotes}
+                    onClose={() => setOpenAddEditModal({ isShown: false, type: "add", data: null })}
                     setShowToastMessage={setShowToastMessage}
                 />
             </Modal>
