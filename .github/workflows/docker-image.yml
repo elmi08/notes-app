@@ -1,0 +1,52 @@
+name: Deploy to MicroK8s
+
+on:
+  push:
+    branches:
+      - main  # adjust this to your main branch name
+
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Build and push backend Docker image
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push backend Docker image
+        run: |
+          docker build -t $DOCKERHUB_USERNAME/fast-note-backend:$GITHUB_SHA backend/
+          docker push $DOCKERHUB_USERNAME/notes-backend:$GITHUB_SHA
+
+      # Build and push frontend Docker image
+      - name: Build and push frontend Docker image
+        run: |
+          docker build -t $DOCKERHUB_USERNAME/fast-notes-frontend:$GITHUB_SHA frontend/
+          docker push $DOCKERHUB_USERNAME/notes-frontend:$GITHUB_SHA
+
+      # Configure kubectl with kubeconfig
+      - name: Set up Kubeconfig
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" > $HOME/.kube/config
+
+      # Deploy backend to MicroK8s
+      - name: Deploy backend to MicroK8s
+        run: |
+          kubectl apply -f kubernetes/backend-deployment-service.yaml
+
+      # Deploy frontend to MicroK8s
+      - name: Deploy frontend to MicroK8s
+        run: |
+          kubectl apply -f kubernetes/frontend-deployment-service.yaml
+
