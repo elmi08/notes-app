@@ -41,14 +41,16 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" > $HOME/.kube/config
 
+      - name: Test API server connectivity
+        run: |
+          telnet 192.168.0.23 16443
+
       # Deploy backend to MicroK8s
       - name: Deploy backend to MicroK8s
         run: |
-          sed -i 's|image: notes-backend:latest|image: $DOCKERHUB_USERNAME/fast-notes-backend:${{ github.sha }}|g' backend/deployment-service.yaml
           kubectl apply -f backend/deployment-service.yaml --validate=false
 
       - name: Deploy frontend to MicroK8s
         run: |
-          sed -i 's|image: notes-frontend:latest|image: $DOCKERHUB_USERNAME/fast-notes-frontend:${{ github.sha }}|g' frontend/deployment-service.yaml
           kubectl apply -f frontend/deployment-service.yaml --validate=false
 
