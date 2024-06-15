@@ -44,10 +44,11 @@ jobs:
       # Deploy backend to MicroK8s
       - name: Deploy backend to MicroK8s
         run: |
-          kubectl apply -f backend/deployment-service.yaml 
+          sed -i 's|image: notes-backend:latest|image: $DOCKERHUB_USERNAME/fast-notes-backend:${{ github.sha }}|g' backend/deployment-service.yaml
+          kubectl apply -f backend/deployment-service.yaml --validate=false
 
-      # Deploy frontend to MicroK8s
       - name: Deploy frontend to MicroK8s
         run: |
-          kubectl apply -f frontend/deployment-service.yaml 
+          sed -i 's|image: notes-frontend:latest|image: $DOCKERHUB_USERNAME/fast-notes-frontend:${{ github.sha }}|g' frontend/deployment-service.yaml
+          kubectl apply -f frontend/deployment-service.yaml --validate=false
 
