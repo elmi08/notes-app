@@ -41,6 +41,10 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" > $HOME/.kube/config
 
+      - name: Test API server connectivity
+        run: |
+          curl -k https://192.168.0.23:16443
+
       # Deploy backend to MicroK8s
       - name: Deploy backend to MicroK8s
         run: |
