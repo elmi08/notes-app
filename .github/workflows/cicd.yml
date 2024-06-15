@@ -11,7 +11,7 @@ env:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
@@ -26,14 +26,14 @@ jobs:
 
       - name: Build and push backend Docker image
         run: |
-          docker build -t $DOCKERHUB_USERNAME/fast-notes-backend:$GITHUB_SHA backend/
-          docker push $DOCKERHUB_USERNAME/fast-notes-backend:$GITHUB_SHA
+          docker build -t elmi08/fast-notes-backend:latest
+          docker push elmi08/fast-notes-backend:latest
 
       # Build and push frontend Docker image
       - name: Build and push frontend Docker image
         run: |
-          docker build -t $DOCKERHUB_USERNAME/fast-notes-frontend:$GITHUB_SHA frontend/
-          docker push $DOCKERHUB_USERNAME/fast-notes-frontend:$GITHUB_SHA
+          docker build -t elmi08/fast-notes-frontend:latest
+          docker push elmi08/fast-notes-frontend:latest
 
       # Configure kubectl with kubeconfig
       - name: Set up Kubeconfig
@@ -41,16 +41,11 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" > $HOME/.kube/config
 
-      - name: Test API server connectivity
-        run: |
-          telnet 192.168.0.23 16443
-
       # Deploy backend to MicroK8s
       - name: Deploy backend to MicroK8s
         run: |
-          kubectl apply -f backend/deployment-service.yaml --validate=false
-
+          kubectl apply -f backend/deployment-service.yaml 
       - name: Deploy frontend to MicroK8s
         run: |
-          kubectl apply -f frontend/deployment-service.yaml --validate=false
+          kubectl apply -f frontend/deployment-service.yaml
 
