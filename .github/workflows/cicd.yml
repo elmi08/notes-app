@@ -33,7 +33,7 @@ jobs:
       - name: Build and push frontend Docker image
         run: |
           docker build -t $DOCKERHUB_USERNAME/fast-notes-frontend:$GITHUB_SHA frontend/
-          docker push $DOCKERHUB_USERNAME/notes-frontend:$GITHUB_SHA
+          docker push $DOCKERHUB_USERNAME/fast-notes-frontend:$GITHUB_SHA
 
       # Configure kubectl with kubeconfig
       - name: Set up Kubeconfig
