@@ -1,20 +1,15 @@
-# Use the official Node.js image
-FROM node:16
+FROM node:18-alpine 
 
-# Set the working directory in the container
-WORKDIR /app
+WORKDIR /frontend
 
-# Copy the package.json and package-lock.json files
 COPY package.json package-lock.json ./
 
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the application code
 COPY . .
 
-# Expose the port the app runs on
+RUN npm run build
+
 EXPOSE 3000
 
-# Command to run the application
-CMD ["npm", "run", "dev"]
+CMD [ "npm", "run", "preview" ]

@@ -27,6 +27,7 @@ const Home = () => {
     const [userInfo, setUserInfo] = useState(null);
     const [allNotes, setAllNotes] = useState([]);
     const [isSearch, setIsSearch] = useState(false);
+    const [loading, setLoading] = useState(true); // Add loading state
 
     const navigate = useNavigate();
 
@@ -66,6 +67,7 @@ const Home = () => {
     };
 
     const getAllNotes = async () => {
+        setLoading(true); // Set loading to true before fetching data
         try {
             const response = await axiosInstance.get("/get-notes");
             if (response.data && response.data.notes) {
@@ -74,6 +76,7 @@ const Home = () => {
         } catch (error) {
             console.error('An unexpected error occurred:', error);
         }
+        setLoading(false); // Set loading to false after data is fetched
     };
 
     const deleteNote = async (data) => {
@@ -140,35 +143,41 @@ const Home = () => {
                 onSearchNote={onSearchNote}
                 handleClearSearch={handleClearSearch}
             />
-            <div className='relative min-h-screen bg-blue-500'>
+            <div className='relative min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600'>
                 <div className='p-6'>
-                    {allNotes.length > 0 ? (
-                        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-                            {allNotes.map((item) => (
-                                <NoteCard
-                                    key={item._id}
-                                    title={item.title}
-                                    date={item.createdOn}
-                                    content={item.content}
-                                    tags={item.tags}
-                                    isPinned={item.isPinned}
-                                    onEdit={() => handleEdit(item)}
-                                    onDelete={() => deleteNote(item)}
-                                    onPinNote={() => updateIsPinned(item)}
-                                />
-                            ))}
+                    {loading ? ( // Conditionally render loading spinner or message
+                        <div className='flex justify-center items-center min-h-screen'>
+                            <p className='text-white'>Loading...</p>
                         </div>
                     ) : (
-                        <EmptyCard
-                            imgSrc={isSearch ? NoDataImg : AddNotesImg}
-                            message={isSearch ? 'Ooops! No Notes Found Matching Your Search' : 'Create Your First Note! Click the + Icon at the Bottom Right Corner'}
-                        />
+                        allNotes.length > 0 ? (
+                            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                                {allNotes.map((item) => (
+                                    <NoteCard
+                                        key={item._id}
+                                        title={item.title}
+                                        date={item.createdOn}
+                                        content={item.content}
+                                        tags={item.tags}
+                                        isPinned={item.isPinned}
+                                        onEdit={() => handleEdit(item)}
+                                        onDelete={() => deleteNote(item)}
+                                        onPinNote={() => updateIsPinned(item)}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <EmptyCard
+                                imgSrc={isSearch ? NoDataImg : AddNotesImg}
+                                message={isSearch ? 'Ooops! No Notes Found Matching Your Search' : 'Create Your First Note! Click the + Icon at the Bottom Right Corner'}
+                            />
+                        )
                     )}
                 </div>
             </div>
 
             <button
-                className='w-16 h-16 flex items-center justify-center rounded-2xl bg-blue-500 hover:bg-blue-600 text-white hover:text-white fixed bottom-10 right-10 z-50'
+                className='w-16 h-16 flex items-center justify-center rounded-2xl bg-white text-blue-500 hover:bg-gray-200 hover:text-blue-500 fixed bottom-10 right-10 z-50'
                 onClick={() => {
                     setOpenAddEditModal({ isShown: true, type: 'add', data: null });
                 }}

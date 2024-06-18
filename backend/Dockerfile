@@ -1,8 +1,8 @@
 # Use the official Python image from the Docker Hub
-FROM python:3.9-slim
+FROM python:3.10.14-alpine3.20
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /backend
 
 # Copy the requirements file into the container
 COPY requirements.txt .
@@ -14,7 +14,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose the port the app runs on
-EXPOSE 5000
+EXPOSE 8000
 
 # Command to run the application
-CMD ["python", "server.py"]
+CMD ["python3", "server.py"]
+
+
+
