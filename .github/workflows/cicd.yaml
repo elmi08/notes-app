@@ -19,13 +19,13 @@ jobs:
       - name: Build Backend Docker image
         run: |
           docker build -t elmi08/fast-note-backend:latest ./backend
-          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push elmi08/fast-note-backend:latest
 
       - name: Build Frontend Docker image
         run: |
           docker build -t elmi08/fast-note-backend:latest ./frontend
-          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push elmi08/fast-not-frontend:latest
 
       - name: Configure kubeconfig
