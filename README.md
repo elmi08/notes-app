@@ -1,1 +1,1 @@
-# fast-note
+# notes-app
