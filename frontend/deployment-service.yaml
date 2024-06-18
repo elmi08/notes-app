@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: fast-notes-frontend:latest
+          image: fast-note-frontend:latest
           ports:
             - containerPort: 3000
 ...

@@ -1,0 +1,51 @@
+name: Deploy Fast Note to MicroK8s
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Backend Docker image
+        run: |
+          docker build -t elmi08/fast-note-backend:latest .
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker push elmi08/fast-note-backend:latest
+
+
+      - name: Build Frontend Docker image
+        run: |
+          docker build -t elmi08/fast-note-backend:latest .
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker push elmi08/fast-not-frontend:latest
+
+
+      - name: Install kubectl
+        uses: steebchen/kubectl-action@v2
+        with:
+          version: latest
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+      
+      - name: Deploy Backend to MicroK8s
+        run: |
+          kubectl apply -f backend/development-service.yaml
+
+      - name: Deploy Frontend to MicroK8s
+        run: |
+          kubectl apply -f frontend/development-service.yaml
+
+
