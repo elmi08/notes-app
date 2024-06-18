@@ -20,4 +20,4 @@ spec:
           env:
             - name: VITE_BACKEND_URL
               value: "http://backend-service:8000"  
-
+  
