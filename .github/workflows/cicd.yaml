@@ -22,18 +22,11 @@ jobs:
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker push elmi08/fast-note-backend:latest
 
-
       - name: Build Frontend Docker image
         run: |
           docker build -t elmi08/fast-note-backend:latest .
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker push elmi08/fast-not-frontend:latest
-
-
-      - name: Install kubectl
-        uses: steebchen/kubectl-action@v2
-        with:
-          version: latest
 
       - name: Configure kubeconfig
         run: |
