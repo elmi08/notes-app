@@ -1,8 +1,6 @@
 # Use official Node.js image as the base image
 FROM node:current-alpine3.20 AS build
 
-RUN npm install -g vite
-
 # Set the working directory inside the container
 WORKDIR /frontend
 
@@ -20,10 +18,10 @@ RUN npm run build
 FROM nginx:alpine
 
 # Copy the built app from the previous stage
-COPY --from=build frontend/dist /usr/share/nginx/html
+COPY --from=build /frontend/dist /usr/share/nginx/html
 
 # Copy nginx configuration file
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
 EXPOSE 80
