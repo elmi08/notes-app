@@ -14,9 +14,12 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: fast-note-frontend:latest
+          image: elmi08/fast-note-frontend:latest
           ports:
             - containerPort: 3000
+          env:
+            - name: VITE_BACKEND_URL
+              value: "http://localhost:8000"  
 ...
 apiVersion: v1
 kind: Service
