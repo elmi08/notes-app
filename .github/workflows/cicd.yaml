@@ -44,8 +44,10 @@ jobs:
       
       - name: Deploy Backend to MicroK8s
         run: |
-          kubectl apply -f backend/deployment-service.yaml
+          kubectl apply -f backend/deployment.yaml
+          kubectl apply -f backend/service.yaml
 
       - name: Deploy Frontend to MicroK8s
         run: |
-          kubectl apply -f frontend/deployment-service.yaml
+          kubectl apply -f frontend/deployment.yaml
+          kubectl apply -f frontend/service.yaml
