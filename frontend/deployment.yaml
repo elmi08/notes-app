@@ -16,7 +16,7 @@ spec:
         - name: frontend
           image: elmi08/fast-note-frontend:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 80
           env:
             - name: VITE_BACKEND_URL
               value: "http://backend-service:8000"  
