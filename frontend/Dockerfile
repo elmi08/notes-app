@@ -14,11 +14,17 @@ COPY . .
 
 RUN npm run build
 
+RUN ls
+
 # Use nginx as the production server
 FROM nginx:alpine
 
+RUN ls
+
 # Copy the built app from the previous stage
-COPY --from=build /frontend/dist /usr/share/nginx/html
+COPY --from=build frontend/dist /usr/share/nginx/html
+
+RUN ls
 
 # Copy nginx configuration file
 COPY default.conf /etc/nginx/conf.d/default.conf
