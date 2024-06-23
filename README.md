@@ -13,8 +13,6 @@ cd notes-app
 - Create the Database User
 - Choose the python driver
 - Copy the MongoDb Connenction String
-```bash
-``` 
 - Go into the backend folder. Paste the MongoDb Connection String to the MONGO_URI variable in the .env file.
 ```bash
 ACCESS_TOKEN_SECRET=5RbOGFpZ2pd6yzegnt6c31A5SOa3MvNK
@@ -26,6 +24,7 @@ MONGO_URI=mongodb+srv://elmimoha08:dMG5V1XM4k5FV7gl@cluster0.5mghgqy.mongodb.net
 
 ### Start Backend Server ###
 - Go into the backend folder and run the following commands:
+
 Install requirements. Make sure Python is installed in your machine
 ```bash
 pip install -r requirements.txt
@@ -58,8 +57,7 @@ npm run build
 ```
 
 # For Production #
-- Go into the project folder
-- To Run the application in Docker. Use the following command:
+- To Run the application in Docker. Go to the project folder and use the following command:
 - Make sure Docker is installed in your machine 
 ```bash
 docker-compose up 
