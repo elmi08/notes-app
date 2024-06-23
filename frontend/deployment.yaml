@@ -19,5 +19,5 @@ spec:
             - containerPort: 80
           env:
             - name: BACKEND_SERVER_URL
-              value: "http://backend:30101"  
+              value: "http://192.168.0.23:30101"  
   
