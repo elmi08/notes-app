@@ -1,5 +1,5 @@
 # Fast Note - Note Taking App #
-- This is a Note Taking app developed with a Python Backend Api and a Vite-React Frontend
+- This is a Note Taking app developed with a Python Backend Api and a Vite-React Frontend. Feel Free to Star the Repo
 
 ## For Development ###
 Clone project and go into the directory
