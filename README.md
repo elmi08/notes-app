@@ -19,6 +19,10 @@ ACCESS_TOKEN_SECRET=5RbOGFpZ2pd6yzegnt6c31A5SOa3MvNK
 
 MONGO_URI=mongodb+srv://elmimoha08:dMG5V1XM4k5FV7gl@cluster0.5mghgqy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 ```
+- Change the database name "Fast-Note-Database" in the server.py to the name you gave to your Cluster
+```bash
+db = client.get_database("Fast-Note-Database")
+```
 ### Access Token ###
 - Generate an Access Token and paste it to the ACCESS_TOKEN variable. Go to this website to generate an access token (https://randomkeygen.com/)
 
