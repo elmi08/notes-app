@@ -1,33 +1,15 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Ignore files in backend directory
+backend/.env
+backend/venv/
+backend/__pycache__/
 
-node_modules
-dist
-dist-ssr
-*.local
+# Ignore files in frontend directory
+frontend/.env
+frontend/.env.production
+frontend/node_modules/
+frontend/dist/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-#backend
-.vscode/*
-./backend/venv/
-./backend/__pycache_/
-#frontend
-./frontend/.env
+# Ignore .vscode directory
+.vscode/
 
 
