@@ -1,9 +1,7 @@
-# Fast Note #
+# Fast Note - Note Taking App#
+- This is a Note Taking app developed with a Python Backend Api and a Vite-React Frontend
 
-### Your Personal Space to Take Notes, Stay Organized, and be Productive ###
-
-## For Development ##
-
+## For Development ###
 Clone project and go into the directory
 ``` bash
 git clone https://github.com/elmi08/notes-app.git
@@ -48,6 +46,7 @@ npm install
 ```bash
 npm run dev
 ```
+
 ## Build Application ##
 - Go into the frontend folder and run the following commands:
 - Build Application
