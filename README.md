@@ -14,7 +14,6 @@ cd notes-app
 - Choose the python driver
 - Copy the MongoDb Connenction String
 ```bash
-mongodb+srv://elmimoha08:dMG5V1XM4k5FV7gl@cluster0.5mghgqy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 ``` 
 - Go into the backend folder. Paste the MongoDb Connection String to the MONGO_URI variable in the .env file.
 ```bash
