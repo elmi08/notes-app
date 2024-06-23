@@ -1,4 +1,4 @@
-# Fast Note - Note Taking App#
+# Fast Note - Note Taking App #
 - This is a Note Taking app developed with a Python Backend Api and a Vite-React Frontend
 
 ## For Development ###
@@ -25,7 +25,7 @@ MONGO_URI=mongodb+srv://elmimoha08:dMG5V1XM4k5FV7gl@cluster0.5mghgqy.mongodb.net
 ### Start Backend Server ###
 - Go into the backend folder and run the following commands:
 
-Install requirements. Make sure Python is installed in your machine
+Install requirements.
 ```bash
 pip install -r requirements.txt
 ```
@@ -40,6 +40,7 @@ python3 server.py
 
 ### Start Frontend Server ###
 - Go into the frontend folder and run the following commands:
+
 Install dependancies
 ```bash
 npm install
@@ -51,6 +52,7 @@ npm run dev
 
 ### Build Application ###
 - Go into the frontend folder and run the following commands:
+
 Build Application
 ```bash
 npm run build
@@ -58,7 +60,6 @@ npm run build
 
 # For Production #
 - To Run the application in Docker. Go to the project folder and use the following command:
-- Make sure Docker is installed in your machine 
 ```bash
 docker-compose up 
 ```
