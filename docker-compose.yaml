@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: elmi08/fast-note-frontend:latest
+    ports:
+      - "3000:80"
+    environment:
+      - BACKEND_SERVER_URL=http://localhost:8000
+    depends_on:
+      - backend
+
+  backend:
+    image: elmi08/fast-note-backend:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - ACCESS_TOKEN_SECRET=n1DnTh24Dmg4PCvlZoeLcYQrgV06U3rD
+      - MONGO_URI=mongodb+srv://elmi:XRLDITdsEG2SkzWD@fast-note-database.abbihhi.mongodb.net/?retryWrites=true&w=majority&appName=Fast-Note-Database
